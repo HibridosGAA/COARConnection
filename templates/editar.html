@@ -1,0 +1,1636 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discord - Mi cuenta</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1e1f22;
+            color: #dbdee1;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 230px;
+            background-color: #2b2d31;
+            padding: 60px 8px 8px 8px;
+            overflow-y: auto;
+        }
+
+        .search-box {
+            background-color: #1e1f22;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 12px;
+            width: 100%;
+            color: #dbdee1;
+            margin-bottom: 20px;
+        }
+
+        .menu-section {
+            margin-bottom: 20px;
+        }
+
+        .menu-header {
+            color: #949ba4;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            padding: 0 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .menu-item {
+            padding: 8px 12px;
+            margin: 2px 0;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.15s;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .menu-item:hover {
+            background-color: #404249;
+            color: #fff;
+        }
+
+        .menu-item.active {
+            background-color: #404249;
+            color: #fff;
+        }
+
+        .menu-badge {
+            background-color: #5865f2;
+            color: white;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 60px 40px;
+        }
+
+        .close-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 2px solid #4e5058;
+            background-color: transparent;
+            color: #b5bac1;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: background-color 0.15s;
+        }
+
+        .close-button:hover {
+            background-color: #404249;
+        }
+
+        .esc-label {
+            position: fixed;
+            top: 64px;
+            right: 28px;
+            color: #949ba4;
+            font-size: 11px;
+        }
+
+        .page-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 32px;
+            border-bottom: 1px solid #3f4147;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 10px 0;
+            cursor: pointer;
+            font-size: 16px;
+            color: #b5bac1;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -1px;
+            transition: color 0.15s, border-color 0.15s;
+        }
+
+        .tab:hover {
+            color: #dbdee1;
+        }
+
+        .tab.active {
+            color: #fff;
+            border-bottom-color: #5865f2;
+        }
+
+        .profile-banner {
+            background: linear-gradient(135deg, #7c94b6 0%, #6b83a3 100%);
+            height: 100px;
+            border-radius: 8px 8px 0 0;
+            margin-bottom: 70px;
+            position: relative;
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: #5865f2;
+            position: absolute;
+            bottom: -40px;
+            left: 20px;
+            border: 6px solid #313338;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .profile-avatar svg {
+            width: 50px;
+            height: 50px;
+            fill: white;
+        }
+
+        .profile-name {
+            position: absolute;
+            bottom: -50px;
+            left: 115px;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .edit-profile-btn {
+            position: absolute;
+            bottom: -50px;
+            right: 20px;
+            background-color: #5865f2;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background-color 0.15s;
+        }
+
+        .edit-profile-btn:hover {
+            background-color: #4752c4;
+        }
+
+        .info-section {
+            background-color: #2b2d31;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #3f4147;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-size: 12px;
+            color: #b5bac1;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+            letter-spacing: 0.5px;
+        }
+
+        .info-value {
+            font-size: 16px;
+            color: #dbdee1;
+        }
+
+        .info-link {
+            color: #00a8fc;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .info-link:hover {
+            text-decoration: underline;
+        }
+
+        .edit-btn {
+            background-color: #4e5058;
+            color: white;
+            border: none;
+            padding: 6px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background-color 0.15s;
+        }
+
+        .edit-btn:hover {
+            background-color: #6d6f78;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin: 32px 0 16px 0;
+        }
+
+        .action-btn {
+            background-color: #5865f2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            margin-top: 12px;
+            transition: background-color 0.15s;
+        }
+
+        .action-btn:hover {
+            background-color: #4752c4;
+        }
+
+        .security-item {
+            margin-bottom: 24px;
+        }
+
+        .security-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .security-description {
+            font-size: 14px;
+            color: #b5bac1;
+            margin-bottom: 12px;
+        }
+
+        .danger-zone {
+            margin-top: 40px;
+        }
+
+        .danger-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .danger-description {
+            font-size: 14px;
+            color: #b5bac1;
+            margin-bottom: 16px;
+        }
+
+        .danger-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .danger-btn {
+            background-color: #da373c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background-color 0.15s;
+        }
+
+        .danger-btn:hover {
+            background-color: #a12d30;
+        }
+
+        .delete-btn {
+            background-color: transparent;
+            color: #da373c;
+            border: 1px solid #da373c;
+        }
+
+        .delete-btn:hover {
+            background-color: rgba(218, 55, 60, 0.1);
+        }
+
+        .profiles-content {
+            display: none;
+        }
+
+        .profiles-content.active {
+            display: block;
+        }
+
+        .promo-banner {
+            background: linear-gradient(90deg, #5865f2 0%, #7c3aed 50%, #10b981 100%);
+            border-radius: 8px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .promo-banner::before {
+            content: '';
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            top: -50px;
+            left: -50px;
+        }
+
+        .promo-content {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            z-index: 1;
+        }
+
+        .promo-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 3px solid rgba(255, 255, 255, 0.5);
+            position: relative;
+        }
+
+        .promo-avatar-inner {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background-color: #36393f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .promo-icon {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            border-radius: 50%;
+            top: -5px;
+            right: -5px;
+            border: 2px solid #5865f2;
+        }
+
+        .promo-text h3 {
+            font-size: 18px;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        .promo-text p {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .promo-btn {
+            background-color: white;
+            color: #2b2d31;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: transform 0.15s;
+            z-index: 1;
+        }
+
+        .promo-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            font-size: 12px;
+            color: #b5bac1;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            display: block;
+            letter-spacing: 0.5px;
+        }
+
+        .form-input {
+            width: 100%;
+            max-width: 500px;
+            background-color: #1e1f22;
+            border: 1px solid #1e1f22;
+            border-radius: 4px;
+            padding: 10px;
+            color: #dbdee1;
+            font-size: 16px;
+            transition: border-color 0.15s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #5865f2;
+        }
+
+        .form-input::placeholder {
+            color: #4e5058;
+        }
+
+        .preview-section {
+            margin-bottom: 32px;
+        }
+
+        .preview-box {
+            background-color: #2b2d31;
+            border-radius: 8px;
+            padding: 20px;
+            max-width: 280px;
+        }
+
+        .preview-banner {
+            height: 80px;
+            background: linear-gradient(135deg, #7c94b6 0%, #6b83a3 100%);
+            border-radius: 8px 8px 0 0;
+            position: relative;
+            margin: -20px -20px 0 -20px;
+        }
+
+        .preview-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: #5865f2;
+            border: 6px solid #2b2d31;
+            position: absolute;
+            bottom: -40px;
+            left: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .preview-avatar svg {
+            width: 50px;
+            height: 50px;
+            fill: white;
+        }
+
+        .add-status {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 24px;
+            height: 24px;
+            background-color: #23a559;
+            border-radius: 50%;
+            border: 3px solid #2b2d31;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .add-status::before {
+            content: '+';
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .preview-info {
+            margin-top: 48px;
+        }
+
+        .preview-name {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .preview-username {
+            font-size: 14px;
+            color: #b5bac1;
+            margin-bottom: 16px;
+        }
+
+        .preview-button {
+            width: 100%;
+            background-color: #5865f2;
+            color: white;
+            border: none;
+            padding: 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .name-tag-preview {
+            background-color: #2b2d31;
+            border-radius: 8px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            max-width: 400px;
+        }
+
+        .name-tag-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #5865f2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .name-tag-avatar svg {
+            width: 24px;
+            height: 24px;
+            fill: white;
+        }
+
+        .name-tag-name {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .color-picker {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #7c94b6 0%, #6b83a3 100%);
+            cursor: pointer;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .color-picker::after {
+            content: '✎';
+            color: white;
+            font-size: 20px;
+        }
+
+        .nitro-promo {
+            background-color: #2b2d31;
+            border-radius: 8px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 32px;
+        }
+
+        .nitro-promo-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nitro-icon {
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #5865f2, #7c3aed);
+            border-radius: 4px;
+        }
+
+        .nitro-promo-text {
+            font-size: 14px;
+        }
+
+        .nitro-link {
+            color: #00a8fc;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .try-btn {
+            background-color: #5865f2;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: #313338;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid #3f4147;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: #b5bac1;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+        }
+
+        .modal-close:hover {
+            background-color: #404249;
+        }
+
+        .modal-body {
+            padding: 20px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .modal-footer {
+            padding: 16px 20px;
+            border-top: 1px solid #3f4147;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .modal-tabs {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .modal-tab {
+            padding: 8px 16px;
+            background-color: transparent;
+            border: none;
+            color: #b5bac1;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background-color 0.15s;
+        }
+
+        .modal-tab:hover {
+            background-color: #404249;
+        }
+
+        .modal-tab.active {
+            background-color: #404249;
+            color: #fff;
+        }
+
+        .name-tag-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 12px;
+        }
+
+        .name-tag-item {
+            background-color: #2b2d31;
+            border-radius: 8px;
+            padding: 12px;
+            cursor: pointer;
+            transition: background-color 0.15s;
+            position: relative;
+            border: 2px solid transparent;
+        }
+
+        .name-tag-item:hover {
+            background-color: #404249;
+        }
+
+        .name-tag-item.locked {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .lock-icon {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            color: #b5bac1;
+        }
+
+        .name-tag-preview-small {
+            height: 60px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            padding: 0 12px;
+            gap: 8px;
+        }
+
+        .name-tag-avatar-small {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #5865f2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .name-tag-avatar-small svg {
+            width: 20px;
+            height: 20px;
+            fill: white;
+        }
+
+        .name-tag-name-small {
+            font-size: 14px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .color-picker-modal {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .color-gradient {
+            width: 100%;
+            height: 150px;
+            border-radius: 8px;
+            background: linear-gradient(to bottom, transparent, black),
+                        linear-gradient(to right, white, transparent);
+            position: relative;
+            cursor: crosshair;
+        }
+
+        .color-selector {
+            width: 12px;
+            height: 12px;
+            border: 2px solid white;
+            border-radius: 50%;
+            position: absolute;
+            pointer-events: none;
+        }
+
+        .hue-slider {
+            width: 100%;
+            height: 12px;
+            border-radius: 6px;
+            background: linear-gradient(to right, 
+                #ff0000 0%, #ffff00 17%, #00ff00 33%, 
+                #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%);
+            position: relative;
+            cursor: pointer;
+        }
+
+        .hue-selector {
+            width: 16px;
+            height: 16px;
+            border: 2px solid white;
+            border-radius: 50%;
+            position: absolute;
+            top: -2px;
+            pointer-events: none;
+            background-color: inherit;
+        }
+
+        .color-input-group {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .color-hex-input {
+            flex: 1;
+            background-color: #1e1f22;
+            border: 1px solid #1e1f22;
+            border-radius: 4px;
+            padding: 8px 12px;
+            color: #dbdee1;
+            font-size: 14px;
+        }
+
+        .color-preset {
+            width: 40px;
+            height: 40px;
+            border-radius: 4px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: border-color 0.15s;
+        }
+
+        .color-preset:hover {
+            border-color: #5865f2;
+        }
+
+        .color-presets {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .current-color-display {
+            width: 60px;
+            height: 40px;
+            border-radius: 4px;
+            border: 1px solid #3f4147;
+        }
+
+        .unavailable-notice {
+            background-color: #2b2d31;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .unavailable-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 16px;
+            background-color: #404249;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+        }
+
+        .unavailable-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .unavailable-text {
+            color: #b5bac1;
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #2b2d31;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #1e1f22;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #18191c;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <input type="text" class="search-box" placeholder="Buscar">
+        
+        <div class="menu-section">
+            <div class="menu-header">Ajustes de usuario</div>
+            <div class="menu-item active">Mi cuenta</div>
+            <div class="menu-item">Perfiles</div>
+            <div class="menu-item">Contenido y redes sociales</div>
+            <div class="menu-item">Datos y privacidad</div>
+            <div class="menu-item">Centro familiar</div>
+            <div class="menu-item">Aplicaciones autorizadas</div>
+            <div class="menu-item">Dispositivos</div>
+            <div class="menu-item">Conexiones</div>
+            <div class="menu-item">Clips</div>
+        </div>
+
+        <div class="menu-section">
+            <div class="menu-header">Ajustes de facturación</div>
+            <div class="menu-item">
+                Nitro
+                <span class="menu-badge">OFERTA</span>
+            </div>
+            <div class="menu-item">Mejora del servidor</div>
+            <div class="menu-item">Suscripciones</div>
+            <div class="menu-item">Inventario de regalos</div>
+            <div class="menu-item">Facturación</div>
+        </div>
+
+        <div class="menu-section">
+            <div class="menu-header">Ajustes de la aplicación</div>
+            <div class="menu-item">Apariencia</div>
+            <div class="menu-item">Accesibilidad</div>
+            <div class="menu-item">Voz y video</div>
+            <div class="menu-item">Chat</div>
+            <div class="menu-item">Notificaciones</div>
+            <div class="menu-item">Atajos de teclado</div>
+            <div class="menu-item">Idioma</div>
+            <div class="menu-item">Modo de transmisión en vivo</div>
+            <div class="menu-item">Avanzados</div>
+        </div>
+
+        <div class="menu-section">
+            <div class="menu-header">Ajustes de actividad</div>
+            <div class="menu-item">Privacidad de la actividad</div>
+            <div class="menu-item">Novedades</div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <button class="close-button">✕</button>
+        <div class="esc-label">ESC</div>
+
+        <h1 class="page-title">Mi cuenta</h1>
+        
+        <div class="tabs">
+            <div class="tab active" onclick="showTab('seguridad')">Seguridad</div>
+            <div class="tab" onclick="showTab('estado')">Estado</div>
+        </div>
+
+        <!-- Contenido de Seguridad -->
+        <div id="seguridad-content" class="tab-content">
+        <div class="profile-banner">
+            <div class="profile-avatar">
+                <svg viewBox="0 0 24 24">
+                    <path d="M20.5 3C21.88 3 23 4.12 23 5.5v13C23 19.88 21.88 21 20.5 21h-17C2.12 21 1 19.88 1 18.5v-13C1 4.12 2.12 3 3.5 3h17zm-8.5 5c-2.49 0-4.5 2.01-4.5 4.5S9.51 17 12 17s4.5-2.01 4.5-4.5S14.49 8 12 8zm0 1.5c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3z"/>
+                </svg>
+            </div>
+            <div class="profile-name">ohno</div>
+            <button class="edit-profile-btn">Editar perfil de usuario</button>
+        </div>
+
+        <div class="info-section">
+            <div class="info-row">
+                <div>
+                    <div class="info-label">Nombre para mostrar</div>
+                    <div class="info-value">ohno</div>
+                </div>
+                <button class="edit-btn">Editar</button>
+            </div>
+
+            <div class="info-row">
+                <div>
+                    <div class="info-label">Nombre de usuario</div>
+                    <div class="info-value">ohnohhhhh</div>
+                </div>
+                <button class="edit-btn">Editar</button>
+            </div>
+
+            <div class="info-row">
+                <div>
+                    <div class="info-label">Correo electrónico</div>
+                    <div class="info-value">************@gmail.com <span class="info-link">Mostrar</span></div>
+                </div>
+                <button class="edit-btn">Editar</button>
+            </div>
+
+            <div class="info-row">
+                <div>
+                    <div class="info-label">Número de teléfono</div>
+                    <div class="info-value">Todavía no has agregado un número de teléfono.</div>
+                </div>
+                <button class="edit-btn">Incluir</button>
+            </div>
+        </div>
+
+        <h2 class="section-title">Contraseña y autenticación</h2>
+        <button class="action-btn">Cambiar contraseña</button>
+
+        <div class="security-item" style="margin-top: 24px;">
+            <div class="security-title">Authenticator App</div>
+            <div class="security-description">Protect your Discord account with an extra layer of security. Once configured, you'll be required to enter your password and complete one additional step in order to sign in.</div>
+            <button class="action-btn">Enable Authenticator App</button>
+        </div>
+
+        <div class="security-item">
+            <div class="security-title">Llaves de seguridad</div>
+            <div class="security-description">Add an additional layer of protection to your account with a Security Key.</div>
+            <button class="action-btn">Registra una clave de seguridad</button>
+        </div>
+
+        <div class="danger-zone">
+            <div class="danger-title">Desactivar cuenta</div>
+            <div class="danger-description">Si desactivas tu cuenta, podrás recuperarla en cualquier momento después de realizar esta acción.</div>
+            <div class="danger-buttons">
+                <button class="danger-btn">Desactivar cuenta</button>
+                <button class="danger-btn delete-btn">Eliminar cuenta</button>
+            </div>
+        </div>
+        </div>
+
+        <!-- Contenido de Perfiles -->
+        <div id="perfiles-content" class="profiles-content">
+            <div class="promo-banner">
+                <div class="promo-content">
+                    <div class="promo-avatar">
+                        <div class="promo-avatar-inner">
+                            <svg viewBox="0 0 24 24" width="30" height="30" fill="white">
+                                <path d="M20.5 3C21.88 3 23 4.12 23 5.5v13C23 19.88 21.88 21 20.5 21h-17C2.12 21 1 19.88 1 18.5v-13C1 4.12 2.12 3 3.5 3h17zm-8.5 5c-2.49 0-4.5 2.01-4.5 4.5S9.51 17 12 17s4.5-2.01 4.5-4.5S14.49 8 12 8zm0 1.5c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3z"/>
+                            </svg>
+                        </div>
+                        <div class="promo-icon"></div>
+                    </div>
+                    <div class="promo-text">
+                        <h3>Renueva el estilo de tu perfil</h3>
+                        <p>Echa un vistazo a las últimas decoraciones de avatar, efectos de perfil y placas de nombre, y consigue tus estilos favoritos.</p>
+                    </div>
+                </div>
+                <button class="promo-btn">Ir a la tienda</button>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Nombre para mostrar</label>
+                <input type="text" class="form-input" value="ohno">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Previsualizar</label>
+                <div class="preview-section">
+                    <div class="preview-box">
+                        <div class="preview-banner">
+                            <div class="preview-avatar">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M20.5 3C21.88 3 23 4.12 23 5.5v13C23 19.88 21.88 21 20.5 21h-17C2.12 21 1 19.88 1 18.5v-13C1 4.12 2.12 3 3.5 3h17zm-8.5 5c-2.49 0-4.5 2.01-4.5 4.5S9.51 17 12 17s4.5-2.01 4.5-4.5S14.49 8 12 8zm0 1.5c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3z"/>
+                                </svg>
+                                <div class="add-status"></div>
+                            </div>
+                        </div>
+                        <div class="preview-info">
+                            <div class="preview-name">ohno</div>
+                            <div class="preview-username">ohnohhhhh</div>
+                            <button class="preview-button">Botón de ejemplo</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Pronombres</label>
+                <input type="text" class="form-input" placeholder="Agrega tus pronombres">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Avatar</label>
+                <button class="action-btn" onclick="document.getElementById('avatar-input').click()">Cambia tu avatar</button>
+                <input type="file" id="avatar-input" accept="image/*" style="display: none;" onchange="handleAvatarChange(event)">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Decoración de avatar</label>
+                <button class="action-btn" onclick="showDecorationModal()">Cambiar decoración</button>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Placa de nombre</label>
+                <button class="action-btn" onclick="showNameTagModal()">Cambiar placa de nombre</button>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Previsualizar placa de nombre</label>
+                <div class="name-tag-preview">
+                    <div class="name-tag-avatar">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M20.5 3C21.88 3 23 4.12 23 5.5v13C23 19.88 21.88 21 20.5 21h-17C2.12 21 1 19.88 1 18.5v-13C1 4.12 2.12 3 3.5 3h17zm-8.5 5c-2.49 0-4.5 2.01-4.5 4.5S9.51 17 12 17s4.5-2.01 4.5-4.5S14.49 8 12 8zm0 1.5c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3z"/>
+                        </svg>
+                    </div>
+                    <div class="name-tag-name">ohno</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Efecto de perfil</label>
+                <button class="action-btn">Cambiar efecto</button>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Color de cartel</label>
+                <div class="color-picker" onclick="showColorPicker()"></div>
+            </div>
+
+            <div class="nitro-promo">
+                <div class="nitro-promo-content">
+                    <div class="nitro-icon"></div>
+                    <div class="nitro-promo-text">
+                        Mejora tu estilo, solo con <span class="nitro-link">Nitro</span>
+                    </div>
+                </div>
+                <button class="try-btn">
+                    <div class="nitro-icon" style="width: 16px; height: 16px;"></div>
+                    Pruébala
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Placa de Nombre -->
+    <div id="nameTagModal" class="modal-overlay" onclick="closeModal(event, 'nameTagModal')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h2 class="modal-title">Cambiar placa de nombre</h2>
+                <button class="modal-close" onclick="closeModalDirect('nameTagModal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-tabs">
+                    <button class="modal-tab active">Ninguno</button>
+                    <button class="modal-tab">Tienda</button>
+                </div>
+                
+                <div class="name-tag-grid">
+                    <div class="name-tag-item" style="background: linear-gradient(135deg, #d8a8ff 0%, #c084fc 100%);">
+                        <div class="lock-icon">🔒</div>
+                        <div class="name-tag-preview-small" style="background: linear-gradient(135deg, #d8a8ff 0%, #c084fc 100%);">
+                            <div class="name-tag-avatar-small">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M20.5 3C21.88 3 23 4.12 23 5.5v13C23 19.88 21.88 21 20.5 21h-17C2.12 21 1 19.88 1 18.5v-13C1 4.12 2.12 3 3.5 3h17zm-8.5 5c-2.49 0-4.5 2.01-4.5 4.5S9.51 17 12 17s4.5-2.01 4.5-4.5S14.49 8 12 8zm0 1.5c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3z"/>
+                                </svg>
+                            </div>
+                            <div class="name-tag-name-small">ohno</div>
+                        </div>
+                    </div>
+
+                    <div class="name-tag-item locked" style="background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%);">
+                        <div class="lock-icon">🔒</div>
+                        <div class="name-tag-preview-small" style="background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%);">
+                            <div class="name-tag-avatar-small">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M20.5 3C21.88 3 23 4.12 23 5.5v13C23 19.88 21.88 21 20.5 21h-17C2.12 21 1 19.88 1 18.5v-13C1 4.12 2.12 3 3.5 3h17zm-8.5 5c-2.49 0-4.5 2.01-4.5 4.5S9.51 17 12 17s4.5-2.01 4.5-4.5S14.49 8 12 8zm0 1.5c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3z"/>
+                                </svg>
+                            </div>
+                            <div class="name-tag-name-small">ohno</div>
+                        </div>
+                    </div>
+
+                    <div class="name-tag-item locked" style="background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);">
+                        <div class="lock-icon">🔒</div>
+                        <div class="name-tag-preview-small" style="background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);">
+                            <div class="name-tag-avatar-small">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M20.5 3C21.88 3 23 4.12 23 5.5v13C23 19.88 21.88 21 20.5 21h-17C2.12 21 1 19.88 1 18.5v-13C1 4.12 2.12 3 3.5 3h17zm-8.5 5c-2.49 0-4.5 2.01-4.5 4.5S9.51 17 12 17s4.5-2.01 4.5-4.5S14.49 8 12 8zm0 1.5c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3z"/>
+                                </svg>
+                            </div>
+                            <div class="name-tag-name-small">ohno</div>
+                        </div>
+                    </div>
+
+                    <div class="name-tag-item locked" style="background: linear-gradient(135deg, #34d399 0%, #10b981 100%);">
+                        <div class="lock-icon">🔒</div>
+                        <div class="name-tag-preview-small" style="background: linear-gradient(135deg, #34d399 0%, #10b981 100%);">
+                            <div class="name-tag-avatar-small">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M20.5 3C21.88 3 23 4.12 23 5.5v13C23 19.88 21.88 21 20.5 21h-17C2.12 21 1 19.88 1 18.5v-13C1 4.12 2.12 3 3.5 3h17zm-8.5 5c-2.49 0-4.5 2.01-4.5 4.5S9.51 17 12 17s4.5-2.01 4.5-4.5S14.49 8 12 8zm0 1.5c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3z"/>
+                                </svg>
+                            </div>
+                            <div class="name-tag-name-small">ohno</div>
+                        </div>
+                    </div>
+
+                    <div class="name-tag-item locked" style="background: linear-gradient(135deg, #e879f9 0%, #d946ef 100%);">
+                        <div class="lock-icon">🔒</div>
+                        <div class="name-tag-preview-small" style="background: linear-gradient(135deg, #e879f9 0%, #d946ef 100%);">
+                            <div class="name-tag-avatar-small">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M20.5 3C21.88 3 23 4.12 23 5.5v13C23 19.88 21.88 21 20.5 21h-17C2.12 21 1 19.88 1 18.5v-13C1 4.12 2.12 3 3.5 3h17zm-8.5 5c-2.49 0-4.5 2.01-4.5 4.5S9.51 17 12 17s4.5-2.01 4.5-4.5S14.49 8 12 8zm0 1.5c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3z"/>
+                                </svg>
+                            </div>
+                            <div class="name-tag-name-small">ohno</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 20px; padding: 16px; background-color: #2b2d31; border-radius: 8px;">
+                    <h3 style="margin-bottom: 8px;">Explora la tienda</h3>
+                    <p style="color: #b5bac1; font-size: 14px; margin-bottom: 12px;">Si quieres, puedes usar mucho más color y enlace.</p>
+                    <button class="action-btn">Ver más en la tienda</button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="edit-btn" onclick="closeModalDirect('nameTagModal')">Cancelar</button>
+                <button class="action-btn">Aplicar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Color de Cartel -->
+    <div id="colorPickerModal" class="modal-overlay" onclick="closeModal(event, 'colorPickerModal')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h2 class="modal-title">Cambiar efecto</h2>
+                <button class="modal-close" onclick="closeModalDirect('colorPickerModal')">×</button>
+            </div>
+            <div class="modal-body">
+                <h3 style="margin-bottom: 12px;">Color de cartel</h3>
+                <div class="color-picker-modal">
+                    <div class="color-gradient" id="colorGradient">
+                        <div class="color-selector" id="colorSelector"></div>
+                    </div>
+                    
+                    <div class="hue-slider" id="hueSlider">
+                        <div class="hue-selector" id="hueSelector"></div>
+                    </div>
+
+                    <div class="color-input-group">
+                        <span style="color: #b5bac1;">#</span>
+                        <input type="text" class="color-hex-input" id="hexInput" value="747c8d" maxlength="6">
+                        <button class="modal-close" style="width: 32px; height: 32px;">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                                <path d="M8 0L6.59 1.41L12.17 7H0V9H12.17L6.59 14.59L8 16L16 8L8 0Z"/>
+                            </svg>
+                        </button>
+                        <div class="current-color-display" id="currentColor" style="background-color: #747c8d;"></div>
+                    </div>
+
+                    <div class="color-presets">
+                        <div class="color-preset" style="background-color: #99aab5;" onclick="setColor('#99aab5')"></div>
+                        <div class="color-preset" style="background-color: #e8e9eb;" onclick="setColor('#e8e9eb')"></div>
+                        <div class="color-preset" style="background-color: #10b981;" onclick="setColor('#10b981')"></div>
+                        <div class="color-preset" style="background-color: #c8a25a;" onclick="setColor('#c8a25a')"></div>
+                        <div class="color-preset" style="background-color: #db94d8;" onclick="setColor('#db94d8')"></div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 20px;">
+                    <h3 style="margin-bottom: 12px;">Sobre mí</h3>
+                    <p style="color: #b5bac1; font-size: 14px; margin-bottom: 12px;">Si quieres, puedes presentarte en esta sección.</p>
+                    <textarea class="form-input" placeholder="Escribe algo sobre ti..." rows="4" style="width: 100%; resize: vertical;"></textarea>
+                </div>
+
+                <div class="nitro-promo" style="margin-top: 20px;">
+                    <div class="nitro-promo-content">
+                        <div class="nitro-icon"></div>
+                        <div class="nitro-promo-text">
+                            Mejora tu estilo, solo con <span class="nitro-link">Nitro</span>
+                        </div>
+                    </div>
+                    <button class="try-btn">
+                        <div class="nitro-icon" style="width: 16px; height: 16px;"></div>
+                        Pruébala
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Decoración (No disponible) -->
+    <div id="decorationModal" class="modal-overlay" onclick="closeModal(event, 'decorationModal')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h2 class="modal-title">Decoración de avatar</h2>
+                <button class="modal-close" onclick="closeModalDirect('decorationModal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="unavailable-notice">
+                    <div class="unavailable-icon">🎨</div>
+                    <h3 class="unavailable-title">No disponible</h3>
+                    <p class="unavailable-text">Las decoraciones de avatar no están disponibles actualmente. Vuelve más tarde para ver nuevas opciones.</p>
+                    <button class="action-btn">Explorar tienda</button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="edit-btn" onclick="closeModalDirect('decorationModal')">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentColor = { h: 220, s: 50, l: 50 };
+
+        function handleAvatarChange(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const avatars = document.querySelectorAll('.preview-avatar svg, .name-tag-avatar svg, .name-tag-avatar-small svg');
+                    avatars.forEach(avatar => {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.style.width = '100%';
+                        img.style.height = '100%';
+                        img.style.objectFit = 'cover';
+                        img.style.borderRadius = '50%';
+                        avatar.parentElement.innerHTML = '';
+                        avatar.parentElement.appendChild(img);
+                    });
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function showNameTagModal() {
+            document.getElementById('nameTagModal').classList.add('active');
+        }
+
+        function showColorPicker() {
+            document.getElementById('colorPickerModal').classList.add('active');
+            initializeColorPicker();
+        }
+
+        function showDecorationModal() {
+            document.getElementById('decorationModal').classList.add('active');
+        }
+
+        function closeModal(event, modalId) {
+            if (event.target.classList.contains('modal-overlay')) {
+                document.getElementById(modalId).classList.remove('active');
+            }
+        }
+
+        function closeModalDirect(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        function initializeColorPicker() {
+            const gradient = document.getElementById('colorGradient');
+            const selector = document.getElementById('colorSelector');
+            const hueSlider = document.getElementById('hueSlider');
+            const hueSelector = document.getElementById('hueSelector');
+            const hexInput = document.getElementById('hexInput');
+            const currentColorDisplay = document.getElementById('currentColor');
+
+            // Set initial position
+            hueSelector.style.left = '50%';
+            selector.style.left = '50%';
+            selector.style.top = '50%';
+
+            gradient.addEventListener('click', (e) => {
+                const rect = gradient.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                selector.style.left = x + 'px';
+                selector.style.top = y + 'px';
+                
+                updateColor();
+            });
+
+            hueSlider.addEventListener('click', (e) => {
+                const rect = hueSlider.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                
+                hueSelector.style.left = x + 'px';
+                
+                updateColor();
+            });
+
+            hexInput.addEventListener('input', (e) => {
+                let value = e.target.value.replace(/[^0-9a-fA-F]/g, '');
+                if (value.length <= 6) {
+                    e.target.value = value;
+                    if (value.length === 6) {
+                        currentColorDisplay.style.backgroundColor = '#' + value;
+                    }
+                }
+            });
+        }
+
+        function hslToRgb(h, s, l) {
+            s /= 100;
+            l /= 100;
+            const k = n => (n + h / 30) % 12;
+            const a = s * Math.min(l, 1 - l);
+            const f = n => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
+            return [Math.round(255 * f(0)), Math.round(255 * f(8)), Math.round(255 * f(4))];
+        }
+
+        function rgbToHex(r, g, b) {
+            return ((r << 16) | (g << 8) | b).toString(16).padStart(6, '0');
+        }
+
+        function hexToRgb(hex) {
+            const num = parseInt(hex, 16);
+            return [(num >> 16) & 255, (num >> 8) & 255, num & 255];
+        }
+
+        function updateColor() {
+            const gradient = document.getElementById('colorGradient');
+            const selector = document.getElementById('colorSelector');
+            const hueSlider = document.getElementById('hueSlider');
+            const hueSelector = document.getElementById('hueSelector');
+            const hexInput = document.getElementById('hexInput');
+            const currentColorDisplay = document.getElementById('currentColor');
+            const colorPicker = document.querySelector('.color-picker');
+            
+            // Get hue from slider
+            const hueRect = hueSlider.getBoundingClientRect();
+            const hueLeft = parseFloat(hueSelector.style.left) || hueRect.width / 2;
+            const huePercent = hueLeft / hueRect.width;
+            const hue = huePercent * 360;
+            
+            // Get saturation and lightness from gradient
+            const gradientRect = gradient.getBoundingClientRect();
+            const selectorLeft = parseFloat(selector.style.left) || gradientRect.width / 2;
+            const selectorTop = parseFloat(selector.style.top) || gradientRect.height / 2;
+            
+            const saturation = (selectorLeft / gradientRect.width) * 100;
+            const lightness = 100 - (selectorTop / gradientRect.height) * 100;
+            
+            // Convert to RGB
+            const [r, g, b] = hslToRgb(hue, saturation, lightness);
+            const hexColor = rgbToHex(r, g, b);
+            
+            // Update displays
+            const color = `#${hexColor}`;
+            currentColorDisplay.style.backgroundColor = color;
+            if (colorPicker) {
+                colorPicker.style.background = color;
+            }
+            hexInput.value = hexColor;
+            
+            // Update gradient background
+            gradient.style.background = `
+                linear-gradient(to bottom, rgba(0,0,0,0), rgba(0,0,0,1)),
+                linear-gradient(to right, rgba(255,255,255,1), hsl(${hue}, 100%, 50%))
+            `;
+        }
+
+        function setColor(hex) {
+            const hexInput = document.getElementById('hexInput');
+            const currentColorDisplay = document.getElementById('currentColor');
+            const colorPicker = document.querySelector('.color-picker');
+            
+            hexInput.value = hex.replace('#', '');
+            currentColorDisplay.style.backgroundColor = hex;
+            if (colorPicker) {
+                colorPicker.style.background = hex;
+            }
+            
+            // Update color picker position based on hex
+            const [r, g, b] = hexToRgb(hex.replace('#', ''));
+            
+            // Simple approximation for demo
+            const max = Math.max(r, g, b);
+            const min = Math.min(r, g, b);
+            const l = (max + min) / 2 / 255;
+            const s = max === min ? 0 : (max - min) / (255 - Math.abs(max + min - 255));
+            
+            let h = 0;
+            if (max !== min) {
+                if (max === r) h = ((g - b) / (max - min) + (g < b ? 6 : 0)) / 6;
+                else if (max === g) h = ((b - r) / (max - min) + 2) / 6;
+                else h = ((r - g) / (max - min) + 4) / 6;
+            }
+            
+            const hueSlider = document.getElementById('hueSlider');
+            const hueSelector = document.getElementById('hueSelector');
+            const gradient = document.getElementById('colorGradient');
+            const selector = document.getElementById('colorSelector');
+            
+            if (hueSlider && hueSelector) {
+                hueSelector.style.left = (h * hueSlider.offsetWidth) + 'px';
+            }
+            
+            if (gradient && selector) {
+                selector.style.left = (s * gradient.offsetWidth) + 'px';
+                selector.style.top = ((1 - l) * gradient.offsetHeight) + 'px';
+            }
+            
+            updateColor();
+        }
+
+        function applyBannerColor() {
+            const currentColorDisplay = document.getElementById('currentColor');
+            const color = currentColorDisplay.style.backgroundColor;
+            const profileBanner = document.querySelector('.profile-banner');
+            const previewBanner = document.querySelector('.preview-banner');
+            const colorPicker = document.querySelector('.color-picker');
+            
+            if (profileBanner) {
+                profileBanner.style.background = color;
+            }
+            if (previewBanner) {
+                previewBanner.style.background = color;
+            }
+            if (colorPicker) {
+                colorPicker.style.background = color;
+            }
+            
+            closeModalDirect('colorPickerModal');
+        }
+
+        function showTab(tabName) {
+            // Ocultar todos los contenidos
+            document.getElementById('seguridad-content').style.display = 'none';
+            document.getElementById('perfiles-content').style.display = 'none';
+            
+            // Remover clase active de todas las tabs
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Mostrar el contenido seleccionado
+            if (tabName === 'seguridad') {
+                document.getElementById('seguridad-content').style.display = 'block';
+                tabs[0].classList.add('active');
+            } else if (tabName === 'estado') {
+                // Tab Estado vacía por ahora
+            }
+        }
+
+        // Cambiar a perfil al hacer clic en el menú
+        document.addEventListener('DOMContentLoaded', function() {
+            const perfilesMenuItem = document.querySelectorAll('.menu-item')[1];
+            perfilesMenuItem.addEventListener('click', function() {
+                document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('active'));
+                this.classList.add('active');
+                document.querySelector('.page-title').textContent = 'Perfiles';
+                document.getElementById('seguridad-content').style.display = 'none';
+                document.getElementById('perfiles-content').style.display = 'block';
+                tabs[0].textContent = 'Perfil principal';
+                tabs[1].textContent = 'Perfiles del servidor';
+                tabs[0].classList.add('active');
+                tabs[1].classList.remove('active');
+            });
+
+            const miCuentaMenuItem = document.querySelectorAll('.menu-item')[0];
+            miCuentaMenuItem.addEventListener('click', function() {
+                document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('active'));
+                this.classList.add('active');
+                document.querySelector('.page-title').textContent = 'Mi cuenta';
+                document.getElementById('seguridad-content').style.display = 'block';
+                document.getElementById('perfiles-content').style.display = 'none';
+                tabs[0].textContent = 'Seguridad';
+                tabs[1].textContent = 'Estado';
+            });
+        });
+    </script>

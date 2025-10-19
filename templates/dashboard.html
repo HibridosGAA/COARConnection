@@ -353,9 +353,598 @@
             color: #96989d;
             line-height: 1.5;
         }
+
+        /* Modal de perfil */
+        .profile-modal {
+            display: none;
+            position: fixed;
+            bottom: 60px;
+            left: 80px;
+            width: 300px;
+            background-color: #18191c;
+            border-radius: 8px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+            z-index: 1000;
+            animation: slideUp 0.2s ease;
+        }
+
+        .profile-modal.show {
+            display: block;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .profile-header {
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 8px 8px 0 0;
+            position: relative;
+            height: 60px;
+        }
+
+        .profile-info {
+            padding: 0 16px 16px;
+            background-color: #2b2d31;
+        }
+
+        .profile-avatar-large {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: 6px solid #2b2d31;
+            position: absolute;
+            top: 20px;
+            left: 16px;
+        }
+
+        .profile-status-indicator {
+            width: 20px;
+            height: 20px;
+            background-color: #23a559;
+            border: 4px solid #2b2d31;
+            border-radius: 50%;
+            position: absolute;
+            bottom: 0;
+            right: 0;
+        }
+
+        .profile-username {
+            padding-top: 50px;
+            margin-bottom: 4px;
+        }
+
+        .profile-username h3 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .profile-tag {
+            font-size: 14px;
+            color: #b5bac1;
+            margin-bottom: 12px;
+        }
+
+        .profile-divider {
+            height: 1px;
+            background-color: #3f4147;
+            margin: 12px 0;
+        }
+
+        .profile-custom-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px;
+            background-color: #1e1f22;
+            border-radius: 4px;
+            margin-bottom: 12px;
+        }
+
+        .profile-custom-status svg {
+            width: 16px;
+            height: 16px;
+            fill: #b5bac1;
+        }
+
+        .profile-custom-status span {
+            font-size: 13px;
+            color: #b5bac1;
+            font-style: italic;
+        }
+
+        .profile-menu {
+            padding: 8px;
+            background-color: #2b2d31;
+            border-radius: 0 0 8px 8px;
+        }
+
+        .profile-menu-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            color: #b5bac1;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .profile-menu-item:hover {
+            background-color: #404249;
+            color: #dcddde;
+        }
+
+        .profile-menu-item svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+            margin-right: 12px;
+        }
+
+        .profile-menu-item-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #23a559;
+            margin-right: 12px;
+        }
+
+        /* Overlay para cerrar el modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 999;
+        }
+
+        .modal-overlay.show {
+            display: block;
+        }
+
+        /* Modal de perfil completo */
+        .full-profile-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .full-profile-modal.show {
+            display: flex;
+        }
+
+        .full-profile-container {
+            width: 90%;
+            max-width: 900px;
+            height: 90%;
+            max-height: 700px;
+            background-color: #313338;
+            border-radius: 8px;
+            display: flex;
+            overflow: hidden;
+            animation: modalAppear 0.2s ease;
+        }
+
+        @keyframes modalAppear {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .full-profile-left {
+            width: 340px;
+            background-color: #2b2d31;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .full-profile-banner {
+            height: 120px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+        }
+
+        .full-profile-avatar-container {
+            position: absolute;
+            bottom: -40px;
+            left: 24px;
+        }
+
+        .full-profile-avatar-large {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: 8px solid #2b2d31;
+            position: relative;
+        }
+
+        .full-profile-status-badge {
+            width: 28px;
+            height: 28px;
+            background-color: #23a559;
+            border: 6px solid #2b2d31;
+            border-radius: 50%;
+            position: absolute;
+            bottom: 0;
+            right: 0;
+        }
+
+        .full-profile-info-section {
+            padding: 60px 24px 20px;
+        }
+
+        .full-profile-username {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .full-profile-tag {
+            font-size: 14px;
+            color: #b5bac1;
+            margin-bottom: 16px;
+        }
+
+        .full-profile-edit-btn {
+            width: 100%;
+            padding: 8px 16px;
+            background-color: #5865f2;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 16px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .full-profile-edit-btn:hover {
+            background-color: #4752c4;
+        }
+
+        .full-profile-details {
+            margin-top: 16px;
+        }
+
+        .full-profile-detail-item {
+            margin-bottom: 16px;
+        }
+
+        .full-profile-detail-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #b5bac1;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .full-profile-detail-value {
+            font-size: 14px;
+            color: #dbdee1;
+        }
+
+        .full-profile-note-input {
+            width: 100%;
+            padding: 8px;
+            background-color: #1e1f22;
+            border: 1px solid #1e1f22;
+            border-radius: 4px;
+            color: #dbdee1;
+            font-size: 14px;
+            resize: none;
+            font-family: inherit;
+        }
+
+        .full-profile-note-input:focus {
+            outline: none;
+            border-color: #5865f2;
+        }
+
+        .full-profile-note-input::placeholder {
+            color: #5e6169;
+        }
+
+        .full-profile-right {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: #313338;
+        }
+
+        .full-profile-tabs {
+            display: flex;
+            padding: 16px 24px;
+            border-bottom: 1px solid #3f4147;
+            gap: 24px;
+        }
+
+        .full-profile-tab {
+            padding: 8px 0;
+            color: #949ba4;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .full-profile-tab:hover {
+            color: #dbdee1;
+        }
+
+        .full-profile-tab.active {
+            color: #fff;
+            border-bottom-color: #5865f2;
+        }
+
+        .full-profile-content {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .full-profile-empty-state {
+            text-align: center;
+            max-width: 440px;
+        }
+
+        .full-profile-empty-state h3 {
+            font-size: 16px;
+            margin-bottom: 8px;
+            color: #f2f3f5;
+        }
+
+        .full-profile-empty-state p {
+            font-size: 14px;
+            color: #b5bac1;
+            line-height: 1.5;
+            margin-bottom: 24px;
+        }
+
+        .platform-icons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .platform-icon {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            opacity: 0.6;
+        }
+
+        .profile-action-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .profile-action-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .profile-action-btn.primary {
+            background-color: #4e5058;
+            color: #fff;
+        }
+
+        .profile-action-btn.primary:hover {
+            background-color: #5c5e66;
+        }
+
+        .profile-action-btn.secondary {
+            background-color: #4e5058;
+            color: #fff;
+        }
+
+        .profile-action-btn.secondary:hover {
+            background-color: #5c5e66;
+        }
+
+        .close-modal-btn {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #b5bac1;
+            font-size: 24px;
+            transition: all 0.2s;
+        }
+
+        .close-modal-btn:hover {
+            background-color: #3f4147;
+            color: #fff;
+        }
     </style>
 </head>
 <body>
+    <!-- Overlay para cerrar modal -->
+    <div class="modal-overlay" id="modalOverlay"></div>
+
+    <!-- Modal de perfil completo -->
+    <div class="full-profile-modal" id="fullProfileModal">
+        <div class="full-profile-container">
+            <button class="close-modal-btn" id="closeFullProfile">✕</button>
+            
+            <div class="full-profile-left">
+                <div class="full-profile-banner">
+                    <div class="full-profile-avatar-container">
+                        <div class="full-profile-avatar-large">
+                            <div class="full-profile-status-badge"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="full-profile-info-section">
+                    <div class="full-profile-username">ohno</div>
+                    <div class="full-profile-tag">ohnohhhhh</div>
+                    
+                    <button class="full-profile-edit-btn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" style="fill: currentColor;">
+                            <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                        </svg>
+                        Editar perfil
+                    </button>
+                    
+                    <div class="full-profile-details">
+                        <div class="full-profile-detail-item">
+                            <div class="full-profile-detail-label">Miembro desde</div>
+                            <div class="full-profile-detail-value">18 oct 2025</div>
+                        </div>
+                        
+                        <div class="full-profile-detail-item">
+                            <div class="full-profile-detail-label">Nota (solo visible para ti)</div>
+                            <textarea class="full-profile-note-input" placeholder="Haz clic para añadir una nota" rows="3"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="full-profile-right">
+                <div class="full-profile-tabs">
+                    <div class="full-profile-tab active">Actividad</div>
+                    <div class="full-profile-tab">Lista de deseados</div>
+                </div>
+                
+                <div class="full-profile-content">
+                    <div class="full-profile-empty-state">
+                        <h3>No tienes ninguna actividad aquí</h3>
+                        <p>Conecta tus cuentas para compartir el estado y la actividad de tus partidas. Tú controlas lo que compartes.</p>
+                        
+                        <div class="platform-icons">
+                            <div class="platform-icon">🎮</div>
+                            <div class="platform-icon">🎯</div>
+                            <div class="platform-icon">🎪</div>
+                            <div class="platform-icon">📺</div>
+                            <div class="platform-icon">🎵</div>
+                            <div class="platform-icon">🎸</div>
+                            <div class="platform-icon">📱</div>
+                            <div class="platform-icon">🎲</div>
+                            <div class="platform-icon">🎭</div>
+                            <div class="platform-icon">🎨</div>
+                            <div class="platform-icon">🎬</div>
+                            <div class="platform-icon">🎤</div>
+                        </div>
+                        
+                        <div class="profile-action-buttons">
+                            <button class="profile-action-btn primary">Vincula cuentas</button>
+                            <button class="profile-action-btn secondary">Agregar juego</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de perfil pequeño -->
+    <div class="profile-modal" id="profileModal">
+        <div class="profile-header">
+            <div class="profile-avatar-large">
+                <div class="profile-status-indicator"></div>
+            </div>
+        </div>
+        <div class="profile-info">
+            <div class="profile-username">
+                <h3>ohno</h3>
+            </div>
+            <div class="profile-tag">ohnohhhhh</div>
+            <div class="profile-divider"></div>
+            <div class="profile-custom-status">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                </svg>
+                <span>¿Mi anime favorito últimamente?</span>
+            </div>
+        </div>
+        <div class="profile-menu">
+            <div class="profile-menu-item">
+                <div class="profile-menu-item-left">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+                    </svg>
+                    Editar perfil
+                </div>
+            </div>
+            <div class="profile-menu-item">
+                <div class="profile-menu-item-left">
+                    <div class="status-dot"></div>
+                    En línea
+                </div>
+                <svg width="20" height="20" viewBox="0 0 24 24">
+                    <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                </svg>
+            </div>
+            <div class="profile-menu-item">
+                <div class="profile-menu-item-left">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+                    </svg>
+                    Cambiar cuentas
+                </div>
+                <svg width="20" height="20" viewBox="0 0 24 24">
+                    <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                </svg>
+            </div>
+        </div>
+    </div>
     <div class="container">
         <!-- Barra de servidores -->
         <div class="server-bar">
@@ -409,10 +998,10 @@
             </div>
 
             <div class="user-bar">
-                <div class="user-info">
+                <div class="user-info" id="userProfile" style="cursor: pointer; padding: 4px; border-radius: 4px; margin: -4px;">
                     <div class="user-avatar"></div>
                     <div class="user-details">
-                        <div class="username">chno</div>
+                        <div class="username">ohno</div>
                         <div class="user-status">En línea</div>
                     </div>
                 </div>
@@ -467,5 +1056,81 @@
             </div>
         </div>
     </div>
+
+    <script>
+        // Obtener elementos
+        const userProfile = document.getElementById('userProfile');
+        const profileModal = document.getElementById('profileModal');
+        const modalOverlay = document.getElementById('modalOverlay');
+        const fullProfileModal = document.getElementById('fullProfileModal');
+        const closeFullProfile = document.getElementById('closeFullProfile');
+
+        // Función para abrir modal pequeño
+        userProfile.addEventListener('click', (e) => {
+            e.stopPropagation();
+            profileModal.classList.toggle('show');
+            modalOverlay.classList.toggle('show');
+        });
+
+        // Función para cerrar modal pequeño al hacer clic fuera
+        modalOverlay.addEventListener('click', () => {
+            profileModal.classList.remove('show');
+            modalOverlay.classList.remove('show');
+        });
+
+        // Agregar efecto hover al perfil
+        userProfile.addEventListener('mouseenter', () => {
+            userProfile.style.backgroundColor = '#36393f';
+        });
+
+        userProfile.addEventListener('mouseleave', () => {
+            userProfile.style.backgroundColor = 'transparent';
+        });
+
+        // Abrir perfil completo al hacer clic en el nombre de usuario del modal pequeño
+        const profileUsername = document.querySelector('.profile-username h3');
+        const profileTag = document.querySelector('.profile-tag');
+        
+        if (profileUsername) {
+            profileUsername.style.cursor = 'pointer';
+            profileUsername.addEventListener('click', (e) => {
+                e.stopPropagation();
+                profileModal.classList.remove('show');
+                modalOverlay.classList.remove('show');
+                fullProfileModal.classList.add('show');
+            });
+        }
+
+        if (profileTag) {
+            profileTag.style.cursor = 'pointer';
+            profileTag.addEventListener('click', (e) => {
+                e.stopPropagation();
+                profileModal.classList.remove('show');
+                modalOverlay.classList.remove('show');
+                fullProfileModal.classList.add('show');
+            });
+        }
+
+        // Cerrar perfil completo
+        closeFullProfile.addEventListener('click', () => {
+            fullProfileModal.classList.remove('show');
+        });
+
+        // Cerrar perfil completo al hacer clic en el fondo
+        fullProfileModal.addEventListener('click', (e) => {
+            if (e.target === fullProfileModal) {
+                fullProfileModal.classList.remove('show');
+            }
+        });
+
+        // Funcionalidad de pestañas
+        const tabs = document.querySelectorAll('.full-profile-tab');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+            });
+        });
+    </script>
 </body>
 </html>
