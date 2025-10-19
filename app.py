@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash 
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -23,6 +24,10 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     password_hash = db.Column(db.String(128), nullable=False)
+    # Campo para marcar administradores
+    is_admin = db.Column(db.Boolean, default=False)
+    # Fecha de creación del usuario
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     # Método para cifrar la contraseña
     def set_password(self, password):
@@ -33,7 +38,16 @@ class User(db.Model):
         return check_password_hash(self.password_hash, password)
 
     def __repr__(self):
-        return f'<User {self.username}>'
+        return f'<User {self.username} (admin={self.is_admin})>'
+
+# Modelo para contactos/amigos
+class Contact(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    owner_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    contact_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+    owner = db.relationship('User', foreign_keys=[owner_id], backref='owned_contacts')
+    contact = db.relationship('User', foreign_keys=[contact_id])
 
 # Crea la base de datos y las tablas (solo la primera vez)
 with app.app_context():
@@ -101,9 +115,19 @@ def dashboard():
     if 'username' not in session:
         flash('Debes iniciar sesión para acceder a esta página.', 'error')
         return redirect(url_for('home'))
-        
-    # Pasar el nombre de usuario a la plantilla
-    return render_template('dashboard.html', username=session['username'])
+    # Obtener el usuario actual
+    user = User.query.filter_by(username=session['username']).first()
+
+    # Obtener la lista de contactos (solo los nombres de usuario)
+    contacts = []
+    if user:
+        # join Contact -> User para obtener los usernames de los contact_id
+        results = Contact.query.filter_by(owner_id=user.id).join(User, Contact.contact_id == User.id).add_columns(User.username).all()
+        # results es lista de tuplas (Contact, username) porque usamos add_columns
+        contacts = [r[1] for r in results]
+
+    # Pasar el nombre de usuario y la lista de contactos a la plantilla
+    return render_template('dashboard.html', username=session['username'], contacts=contacts)
 
 # Ruta para EDITAR PERFIL
 @app.route('/editar')
@@ -115,6 +139,136 @@ def editar():
 
     # Renderiza la plantilla de editar perfil
     return render_template('editar.html', username=session.get('username'))
+
+
+# RUTA: Página de administración con la lista de usuarios (solo admin)
+@app.route('/admin/users')
+def admin_users():
+    if 'username' not in session:
+        flash('Debes iniciar sesión.', 'error')
+        return redirect(url_for('home'))
+
+    current = User.query.filter_by(username=session['username']).first()
+    if not current or not current.is_admin:
+        flash('Acceso denegado. Necesitas permisos de administrador.', 'error')
+        return redirect(url_for('dashboard'))
+
+    users = User.query.order_by(User.created_at.desc()).all()
+    # No enviar password_hash al front-end si no es necesario; se muestra solo username y fecha
+    return render_template('register.html', users=users)
+
+
+# RUTA: Admin establece/resetear contraseña para un usuario (POST)
+@app.route('/admin/set_password', methods=['POST'])
+def admin_set_password():
+    if 'username' not in session:
+        flash('Debes iniciar sesión.', 'error')
+        return redirect(url_for('home'))
+
+    current = User.query.filter_by(username=session['username']).first()
+    if not current or not current.is_admin:
+        flash('Acceso denegado. Necesitas permisos de administrador.', 'error')
+        return redirect(url_for('dashboard'))
+
+    target_username = request.form.get('target_username', '').strip()
+    new_password = request.form.get('new_password', '').strip()
+
+    if not target_username or not new_password:
+        flash('Debes proporcionar usuario y nueva contraseña.', 'error')
+        return redirect(url_for('admin_users'))
+
+    target = User.query.filter_by(username=target_username).first()
+    if not target:
+        flash('Usuario objetivo no encontrado.', 'error')
+        return redirect(url_for('admin_users'))
+
+    # Cambiar la contraseña (se guarda como hash)
+    target.set_password(new_password)
+    db.session.commit()
+
+    flash(f'Contraseña de {target.username} actualizada correctamente.', 'success')
+    return redirect(url_for('admin_users'))
+
+
+# Página de login de administrador (solo para credenciales especiales)
+@app.route('/admin')
+def admin_login_page():
+    # Si ya está logeado como admin, redirigir a la lista
+    if 'username' in session:
+        u = User.query.filter_by(username=session['username']).first()
+        if u and u.is_admin:
+            return redirect(url_for('admin_users'))
+    return render_template('admin.html')
+
+
+# Procesa login admin (credenciales fijas: admin / hh)
+@app.route('/admin/login', methods=['POST'])
+def admin_login():
+    username = request.form.get('username', '')
+    password = request.form.get('password', '')
+
+    # Credenciales fijas según la petición
+    if username == 'admin' and password == 'hh':
+        # Asegurar que exista el usuario admin en la BD y marcar como admin
+        admin_user = User.query.filter_by(username='admin').first()
+        if not admin_user:
+            admin_user = User(username='admin')
+            # guardar una contraseña segura: la seteamos a 'hh' hasheada
+            admin_user.set_password('hh')
+            admin_user.is_admin = True
+            db.session.add(admin_user)
+            db.session.commit()
+        else:
+            # Marcar como admin si no lo está
+            if not admin_user.is_admin:
+                admin_user.is_admin = True
+                db.session.commit()
+
+        # Iniciar sesión como admin
+        session['username'] = 'admin'
+        flash('Acceso administrador concedido.', 'success')
+        return redirect(url_for('admin_users'))
+
+    flash('Credenciales de administrador incorrectas.', 'error')
+    return redirect(url_for('admin_login_page'))
+
+
+# Ruta para AÑADIR AMIGOS / contactos
+@app.route('/add_friend', methods=['POST'])
+def add_friend():
+    if 'username' not in session:
+        flash('Debes iniciar sesión para agregar amigos.', 'error')
+        return redirect(url_for('home'))
+
+    contact_username = request.form.get('contact_username', '').strip()
+    if not contact_username:
+        flash('Por favor ingresa un nombre de usuario válido.', 'error')
+        return redirect(url_for('dashboard'))
+
+    # No permite agregarse a sí mismo
+    if contact_username == session['username']:
+        flash('No puedes agregarte a ti mismo.', 'error')
+        return redirect(url_for('dashboard'))
+
+    contact_user = User.query.filter_by(username=contact_username).first()
+    if not contact_user:
+        flash('Usuario no encontrado. Asegúrate de que el nombre esté escrito correctamente.', 'error')
+        return redirect(url_for('dashboard'))
+
+    owner = User.query.filter_by(username=session['username']).first()
+    # Comprobar duplicados
+    existing = Contact.query.filter_by(owner_id=owner.id, contact_id=contact_user.id).first()
+    if existing:
+        flash('Ya agregaste a ese usuario.', 'error')
+        return redirect(url_for('dashboard'))
+
+    # Crear el contacto
+    new_contact = Contact(owner_id=owner.id, contact_id=contact_user.id)
+    db.session.add(new_contact)
+    db.session.commit()
+
+    flash(f'Has agregado a {contact_user.username} como amigo.', 'success')
+    return redirect(url_for('dashboard'))
 
 # Nueva ruta para CERRAR SESIÓN
 @app.route('/logout')

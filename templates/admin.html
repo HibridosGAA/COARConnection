@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login administrador</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display:flex; align-items:center; justify-content:center; height:100vh; background:#f4f6fb }
+        .card { background:white; padding:24px; border-radius:8px; box-shadow:0 6px 18px rgba(0,0,0,0.08); width:320px }
+        input { width:100%; padding:8px 10px; margin-bottom:8px; border:1px solid #dfe6f2; border-radius:6px }
+        button { width:100%; padding:10px; background:#5865f2; color:white; border:none; border-radius:6px; cursor:pointer }
+        .small { font-size:13px; color:#666; margin-top:8px }
+        .flash { padding:8px 12px; border-radius:4px; margin-bottom:8px }
+        .flash.success { background:#ddf7e6; color:#155724 }
+        .flash.error { background:#fdecea; color:#7b1d1d }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>Login administrador</h2>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, msg in messages %}
+                    <div class="flash {{ category }}">{{ msg }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form action="/admin/login" method="post">
+            <input name="username" placeholder="Usuario" required>
+            <input name="password" type="password" placeholder="Contraseña" required>
+            <button type="submit">Ingresar</button>
+        </form>
+        <div class="small">Solo las credenciales <strong>admin / hh</strong> redirigen a la página de registro de usuarios.</div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administración - Usuarios registrados</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:#f6f7fb; color:#222; padding:24px; }
+        table { width:100%; border-collapse:collapse; margin-top:12px }
+        th, td { padding:8px 12px; border:1px solid #e1e4ea }
+        th { text-align:left; background:#eef1f8 }
+        .small { font-size:13px; color:#666 }
+        form.inline { display:inline-block }
+        .btn { padding:6px 10px; border:none; border-radius:4px; cursor:pointer }
+        .btn.primary { background:#5865f2; color:white }
+        .btn.danger { background:#e05353; color:white }
+        .flash { padding:8px 12px; border-radius:4px; margin-bottom:8px }
+        .flash.success { background:#ddf7e6; color:#155724 }
+        .flash.error { background:#fdecea; color:#7b1d1d }
+    </style>
+</head>
+<body>
+    <h1>Usuarios registrados</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, msg in messages %}
+                <div class="flash {{ category }}">{{ msg }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <table>
+        <thead>
+            <tr>
+                <th>Usuario</th>
+                <th>Creado</th>
+                <th>Admin</th>
+                <th>Acciones (solo admin)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for u in users %}
+            <tr>
+                <td>{{ u.username }}</td>
+                <td class="small">{{ u.created_at.strftime('%Y-%m-%d %H:%M') if u.created_at else '-' }}</td>
+                <td>{{ 'Sí' if u.is_admin else 'No' }}</td>
+                <td>
+                    <form class="inline" action="/admin/set_password" method="post">
+                        <input type="hidden" name="target_username" value="{{ u.username }}">
+                        <input name="new_password" placeholder="Nueva contraseña" required>
+                        <button class="btn primary" type="submit">Actualizar</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <p style="margin-top:16px"><a href="/dashboard">Volver al dashboard</a></p>
+</body>
+</html>

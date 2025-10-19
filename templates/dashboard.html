@@ -1031,10 +1031,24 @@
             <div class="content-area">
                 <div class="add-friend-section">
                     <h2>Añadir amigos</h2>
-                    <p>Puedes agregar amigos con su nombre de usuario de Discord.</p>
-                    <div class="add-friend-form">
-                        <input type="text" placeholder="Puedes agregar amigos con su nombre de usuario de Discord.">
-                        <button>Enviar solicitud de amistad</button>
+                    <p>Puedes agregar amigos con su nombre de usuario registrado.</p>
+                    <form class="add-friend-form" action="/add_friend" method="post">
+                        <input name="contact_username" type="text" placeholder="Ingresa el nombre de usuario exacto" required>
+                        <button type="submit">Agregar</button>
+                    </form>
+
+                    <!-- Lista de contactos agregados -->
+                    <div style="margin-top:16px;">
+                        <h3>Contactos</h3>
+                        {% if contacts and contacts|length > 0 %}
+                            <ul>
+                                {% for c in contacts %}
+                                    <li>{{ c }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p style="color:#96989d;">Aún no has agregado contactos.</p>
+                        {% endif %}
                     </div>
                 </div>
             </div>
