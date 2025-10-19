@@ -1,1 +1,149 @@
-[Immersive content redacted for brevity.]
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Bienvenido</title>
+    <!-- Carga los estilos generales (dark mode) -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        /* Estilos específicos para la estructura del dashboard */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #18191c; /* Fondo oscuro */
+            color: #fff;
+            display: grid;
+            grid-template-rows: 60px 1fr; /* 60px para el header, el resto para el contenido */
+            grid-template-columns: 240px 1fr; /* 240px para la sidebar, el resto para el main */
+            height: 100vh;
+            overflow: hidden; /* Evita el scroll innecesario */
+        }
+
+        /* Header (Barra Superior) */
+        header {
+            grid-column: 1 / 3; /* Ocupa ambas columnas (sidebar + main) */
+            background-color: #111214;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+        }
+
+        .logo {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #00ff73; /* Color neón (Kick style) */
+        }
+
+        .logout-btn {
+            background-color: #00ff73;
+            color: #111;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+        }
+
+        .logout-btn:hover {
+            background-color: #00e667;
+        }
+
+        .logout-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Sidebar (Barra Lateral) */
+        .sidebar {
+            grid-row: 2 / 3; /* Fila debajo del header */
+            grid-column: 1 / 2;
+            background-color: #111214;
+            padding-top: 20px;
+            border-right: 1px solid #282a2e;
+            overflow-y: auto; /* Permite scroll si hay muchos enlaces */
+        }
+
+        .sidebar h3 {
+            color: #888;
+            padding: 0 20px;
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+            text-transform: uppercase;
+        }
+
+        .nav-link {
+            display: block;
+            padding: 10px 20px;
+            color: #ddd;
+            text-decoration: none;
+            transition: background-color 0.2s, color 0.2s;
+            font-size: 1.1em;
+        }
+
+        .nav-link:hover {
+            background-color: #282a2e;
+            color: #fff;
+        }
+
+        .nav-link.active {
+            background-color: #00ff73;
+            color: #111;
+            font-weight: bold;
+        }
+
+        /* Main Content */
+        .main-content {
+            grid-row: 2 / 3;
+            grid-column: 2 / 3;
+            padding: 20px;
+            overflow-y: auto; /* Permite scroll en el contenido principal */
+        }
+
+        .welcome-message {
+            font-size: 2em;
+            margin-bottom: 20px;
+            color: #00ff73;
+            border-bottom: 2px solid #282a2e;
+            padding-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    
+    <header>
+        <div class="logo">APP NAME</div>
+        <a href="{{ url_for('logout') }}" class="logout-btn">Cerrar Sesión</a>
+    </header>
+
+    <div class="sidebar">
+        <h3>Navegación</h3>
+        <a href="#" class="nav-link active">Inicio</a>
+        <a href="#" class="nav-link">Explorar</a>
+        <a href="#" class="nav-link">Recomendado</a>
+
+        <h3 style="margin-top: 30px;">Canales Seguidos</h3>
+        <a href="#" class="nav-link">Usuario A</a>
+        <a href="#" class="nav-link">Usuario B</a>
+        <a href="#" class="nav-link">Usuario C</a>
+    </div>
+
+    <main class="main-content">
+        <!-- El nombre de usuario se pasa desde la sesión de Flask -->
+        <h1 class="welcome-message">¡Hola, {{ session.username | capitalize }}!</h1>
+        <p>Este es el contenido principal de tu Dashboard.</p>
+
+        <!-- Aquí es donde se cargarán los widgets y la información de la aplicación -->
+        <div style="background-color: #282a2e; padding: 20px; border-radius: 8px; margin-top: 30px;">
+            <h2>Información General</h2>
+            <p>Aquí puedes empezar a añadir las características y funcionalidades de tu aplicación.</p>
+        </div>
+    </main>
+
+</body>
+</html>
