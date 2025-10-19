@@ -1,220 +1,144 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard | Bienvenido</title>
-    <!-- Carga los estilos generales (dark mode) -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <!-- Iconos de Font Awesome para los botones -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-    <style>
-        /* ESTILOS DE ESTRUCTURA PRINCIPAL (DISCORD STYLE) */
-        body {
-            font-family: 'Inter', Arial, sans-serif;
-            margin: 0;
-            background-color: #313338; /* Fondo principal más claro que el sidebar */
-            color: #fff;
-            display: grid;
-            /* 3 Columnas: Iconos (72px), Sidebar (240px), Contenido (Resto) */
-            grid-template-columns: 72px 240px 1fr; 
-            grid-template-rows: 1fr; /* Una sola fila para el contenido */
-            height: 100vh;
-            overflow: hidden;
-        }
+  <meta charset="UTF-8">
+  <title>Discord - Añadir amigos</title>
+  <link href="https://fonts.googleapis.com/css2?family=Whitney:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Whitney', Arial, sans-serif;
+      background-color: #313338;
+      color: white;
+    }
 
-        /* ------------------- COLUMNA 1: ICON BAR ------------------- */
-        .icon-bar {
-            grid-column: 1 / 2;
-            background-color: #1e1f22; /* Fondo de la barra de íconos más oscuro */
-            padding-top: 10px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+    .container {
+      display: flex;
+      height: 100vh;
+    }
 
-        .server-icon {
-            width: 50px;
-            height: 50px;
-            background-color: #313338; 
-            color: #fff;
-            border-radius: 50%; /* Iconos redondos */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 1.5em;
-            margin-bottom: 8px;
-            cursor: pointer;
-            transition: border-radius 0.2s, background-color 0.2s;
-        }
+    .sidebar {
+      width: 240px;
+      background-color: #2b2d31;
+      padding: 20px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
 
-        .server-icon:hover {
-            border-radius: 30%; /* Ligeramente más cuadrado al pasar el ratón */
-            background-color: #5865f2; /* Color de Discord */
-        }
-        
-        .server-icon.active {
-            border-radius: 30%;
-            background-color: #5865f2;
-        }
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
 
-        .server-icon.add-server {
-            background-color: #313338;
-            color: #2dc770; /* Verde para el botón de añadir */
-        }
+    .sidebar li {
+      padding: 10px;
+      margin-bottom: 8px;
+      background-color: #40444b;
+      border-radius: 4px;
+      cursor: pointer;
+    }
 
-        /* ------------------- COLUMNA 2: SIDEBAR (CANALES) ------------------- */
-        .sidebar {
-            grid-column: 2 / 3;
-            background-color: #2b2d31; /* Fondo de la barra lateral de canales */
-            padding-top: 15px;
-            overflow-y: auto;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-        }
-        
-        /* Ajuste para el título del canal/servidor */
-        .sidebar-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 10px 15px 15px;
-            color: #fff;
-            font-size: 1.1em;
-            font-weight: 600;
-            border-bottom: 1px solid #3d4045;
-            margin-bottom: 10px;
-        }
+    .sidebar li:hover {
+      background-color: #5865f2;
+    }
 
-        .sidebar h3 {
-            color: #949ba4; /* Color de texto más tenue para categorías */
-            padding: 0 10px;
-            margin-top: 20px;
-            margin-bottom: 5px;
-            font-size: 0.8em;
-            text-transform: uppercase;
-            font-weight: 600;
-        }
+    .profile {
+      font-size: 14px;
+      color: #b9bbbe;
+    }
 
-        .nav-link {
-            display: block;
-            padding: 6px 10px 6px 15px;
-            color: #949ba4;
-            text-decoration: none;
-            transition: background-color 0.1s, color 0.1s;
-            font-size: 1em;
-            margin: 0 8px;
-            border-radius: 4px;
-        }
+    .main {
+      flex: 1;
+      padding: 40px;
+    }
 
-        .nav-link:hover {
-            background-color: #3d4045;
-            color: #dcdee0;
-        }
+    .add-friend-box {
+      background-color: #1e1f22;
+      padding: 30px;
+      border-radius: 8px;
+      max-width: 600px;
+    }
 
-        .nav-link.active {
-            background-color: #404249; /* Canal activo */
-            color: #dcdee0;
-            font-weight: 500;
-        }
+    .add-friend-box h1 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
 
-        /* ------------------- COLUMNA 3: MAIN CONTENT (CHAT/APP) ------------------- */
-        .main-content {
-            grid-column: 3 / 4;
-            background-color: #313338;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-        
-        /* Header del Main Content (similar a la barra de chat) */
-        .main-header {
-            height: 48px;
-            background-color: #313338;
-            border-bottom: 1px solid #3d4045;
-            padding: 0 15px;
-            display: flex;
-            align-items: center;
-            font-size: 1.1em;
-            font-weight: 600;
-        }
+    .add-friend-box p {
+      font-size: 14px;
+      color: #b9bbbe;
+      margin-bottom: 20px;
+    }
 
-        .main-header .icon {
-            color: #949ba4;
-            margin-right: 8px;
-        }
+    .add-friend-box input {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 4px;
+      background-color: #313338;
+      color: white;
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
 
-        .chat-area {
-            flex-grow: 1;
-            padding: 20px;
-            overflow-y: auto;
-        }
-        
-        .welcome-message {
-            font-size: 2em;
-            color: #fff;
-            margin-bottom: 20px;
-        }
-        
-        /* Estilos del botón de Cerrar Sesión (ajustado para el header del main) */
-        .logout-btn {
-            background-color: #5865f2; /* Azul de Discord */
-            color: #fff;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 3px;
-            cursor: pointer;
-            text-decoration: none;
-            font-weight: 500;
-            margin-left: auto; /* Mueve el botón a la derecha */
-        }
-    </style>
+    .add-friend-box button {
+      padding: 10px 20px;
+      background-color: #5865f2;
+      border: none;
+      border-radius: 4px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .active-now {
+      margin-top: 30px;
+      background-color: #1e1f22;
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 600px;
+    }
+
+    .active-now h2 {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    .active-now p {
+      font-size: 14px;
+      color: #b9bbbe;
+    }
+  </style>
 </head>
 <body>
-    
-    <!-- COLUMNA 1: ICON BAR (Servidores) -->
-    <div class="icon-bar">
-        <a href="{{ url_for('logout') }}" class="server-icon" style="margin-top: 0; background-color: #5865f2;"><i class="fas fa-home"></i></a>
-        <div class="server-icon active">A</div>
-        <div class="server-icon">B</div>
-        <div class="server-icon">C</div>
-        <div class="server-icon add-server"><i class="fas fa-plus"></i></div>
-    </div>
 
-    <!-- COLUMNA 2: SIDEBAR (Canales/Navegación) -->
+  <div class="container">
     <div class="sidebar">
-        <div class="sidebar-header">
-            <span>{{ session.username | capitalize }}'s App</span>
-            <a href="{{ url_for('logout') }}" title="Cerrar Sesión" style="color: #949ba4;"><i class="fas fa-sign-out-alt"></i></a>
-        </div>
-        
-        <h3>Texto y Voz</h3>
-        <a href="#" class="nav-link active"><i class="fas fa-hashtag" style="margin-right: 5px;"></i> general</a>
-        <a href="#" class="nav-link"><i class="fas fa-hashtag" style="margin-right: 5px;"></i> anuncios</a>
-
-        <h3 style="margin-top: 20px;">Canales de Voz</h3>
-        <a href="#" class="nav-link"><i class="fas fa-volume-up" style="margin-right: 5px;"></i> Lounge</a>
-        <a href="#" class="nav-link"><i class="fas fa-volume-up" style="margin-right: 5px;"></i> Gaming</a>
+      <ul>
+        <li>Tienda</li>
+        <li>Misiones</li>
+        <li>Mensajes directos</li>
+        <li>Amigos</li>
+      </ul>
+      <div class="profile">Usuario: elmo</div>
     </div>
 
-    <!-- COLUMNA 3: MAIN CONTENT (Área de Trabajo) -->
-    <main class="main-content">
-        <div class="main-header">
-            <i class="fas fa-hashtag icon"></i> general
-            <a href="{{ url_for('logout') }}" class="logout-btn">Cerrar Sesión</a>
-        </div>
-        
-        <div class="chat-area">
-            <h1 class="welcome-message">¡Bienvenido, {{ session.username | capitalize }}!</h1>
-            <p style="color: #c7c7c7;">Estás en el canal #general. Aquí va el contenido principal de tu aplicación, como un chat o tus datos de usuario.</p>
-            
-            <div style="background-color: #3d4045; padding: 15px; border-radius: 6px; margin-top: 30px;">
-                <h2>Tu Zona de Trabajo</h2>
-                <p style="color: #c7c7c7;">Esta es la columna más grande, diseñada para albergar contenido interactivo y widgets.</p>
-            </div>
-        </div>
-    </main>
+    <div class="main">
+      <div class="add-friend-box">
+        <h1>Añadir amigos</h1>
+        <p>Puedes añadir amigos con su nombre de usuario de Discord.</p>
+        <input type="text" placeholder="Usuario#0000">
+        <button>Enviar solicitud de amistad</button>
+      </div>
+
+      <div class="active-now">
+        <h2>Activo ahora</h2>
+        <p>No hay nadie por ahora...</p>
+      </div>
+    </div>
+  </div>
 
 </body>
 </html>
