@@ -47,8 +47,9 @@ with app.app_context():
 # 1. Ruta principal (página de inicio)
 @app.route('/')
 def home():
-    # Renderiza la plantilla HTML llamada 'index.html'
-    return render_template('index.html')
+    # *** CAMBIO REALIZADO AQUÍ ***
+    # Ahora la ruta principal muestra el formulario de login/registro (login.html).
+    return render_template('login.html')
 
 # 2. Ruta de registro
 @app.route('/register', methods=['GET', 'POST'])
@@ -76,9 +77,10 @@ def register():
         db.session.commit()
 
         # 5. Redirigir a la página principal después del registro exitoso
+        # NOTA: Después de un registro exitoso, ahora redirigirá al login (home).
         return redirect(url_for('home'))
 
-    # Si es un método GET, muestra el formulario de registro (login.html)
+    # Si es un método GET (acceso directo a /register), sigue mostrando el formulario
     return render_template('login.html')
 
 # ----------------------------------------
