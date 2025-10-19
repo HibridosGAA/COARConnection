@@ -105,6 +105,17 @@ def dashboard():
     # Pasar el nombre de usuario a la plantilla
     return render_template('dashboard.html', username=session['username'])
 
+# Ruta para EDITAR PERFIL
+@app.route('/editar')
+def editar():
+    # Requerir que el usuario haya iniciado sesión para editar el perfil
+    if 'username' not in session:
+        flash('Debes iniciar sesión para editar el perfil.', 'error')
+        return redirect(url_for('home'))
+
+    # Renderiza la plantilla de editar perfil
+    return render_template('editar.html', username=session.get('username'))
+
 # Nueva ruta para CERRAR SESIÓN
 @app.route('/logout')
 def logout():
