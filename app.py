@@ -1,9 +1,15 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, flash # Importado 'flash'
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 
 # Inicialización de la aplicación
 app = Flask(__name__)
+
+# ----------------------------------------
+# CONFIGURACIÓN ADICIONAL NECESARIA PARA 'flash'
+# ----------------------------------------
+# CLAVE SECRETA NECESARIA PARA USAR SESSIONS/FLASH
+app.config['SECRET_KEY'] = 'una_clave_secreta_fuerte_aqui' 
 
 # ----------------------------------------
 # CONFIGURACIÓN DE LA BASE DE DATOS
@@ -47,7 +53,6 @@ with app.app_context():
 # 1. Ruta principal (página de inicio)
 @app.route('/')
 def home():
-    # *** CAMBIO REALIZADO AQUÍ ***
     # Ahora la ruta principal muestra el formulario de login/registro (login.html).
     return render_template('login.html')
 
@@ -61,12 +66,14 @@ def register():
 
         # Manejo básico de errores: campos vacíos
         if not username or not password:
-            return "Error: Nombre de usuario o contraseña no pueden estar vacíos."
+            flash("Error: Nombre de usuario o contraseña no pueden estar vacíos.", 'error')
+            return redirect(url_for('register'))
 
         # 2. Verificar si el usuario ya existe
         if User.query.filter_by(username=username).first():
-            # Devuelve un mensaje simple. En un app real, usarías 'flash' para mensajes
-            return "El nombre de usuario ya existe. <a href='/register'>Inténtalo de nuevo</a>"
+            # Muestra el mensaje flash de error
+            flash('El nombre de usuario ya existe. Inténtalo de nuevo', 'error')
+            return redirect(url_for('register')) # Redirige al GET para mostrar el mensaje
 
         # 3. Crear el nuevo usuario y cifrar la contraseña
         new_user = User(username=username)
@@ -76,8 +83,10 @@ def register():
         db.session.add(new_user)
         db.session.commit()
 
-        # 5. Redirigir a la página principal después del registro exitoso
-        # NOTA: Después de un registro exitoso, ahora redirigirá al login (home).
+        # Opcional: Mostrar mensaje de éxito
+        flash('¡Cuenta creada con éxito! Por favor, inicia sesión.', 'success')
+
+        # 5. Redirigir a la página principal (que ahora es el login)
         return redirect(url_for('home'))
 
     # Si es un método GET (acceso directo a /register), sigue mostrando el formulario
