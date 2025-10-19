@@ -173,24 +173,22 @@ button[type="submit"]:active {
 
 /* 3. ESTILO PARA MENSAJES FLASH (ERROR/ÉXITO) */
 .flash-message {
-    padding: 10px;
+    /* Eliminado padding, border-radius, opacity y box-shadow */
     margin-bottom: 15px;
-    border-radius: 5px;
     text-align: center;
     font-size: 0.9em;
-    font-weight: 500;
-    opacity: 0.9;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-weight: 600; /* Hacemos el texto un poco más fuerte */
+    color: #fff; /* Aseguramos que el color base sea blanco, aunque las subclases lo sobrescribirán */
 }
 
 .flash-error {
-    background-color: #ffcccc; /* Fondo rojo muy claro */
-    color: #cc0000; /* Texto rojo oscuro */
-    border: 1px solid #cc0000;
+    background-color: transparent; /* Fondo transparente */
+    color: #ff5555; /* Texto rojo de error */
+    border: none; /* Sin borde */
 }
 
 .flash-success {
-    background-color: #ccffcc; /* Fondo verde muy claro */
-    color: #008000; /* Texto verde oscuro */
-    border: 1px solid #008000;
+    background-color: transparent; /* Fondo transparente */
+    color: #4CAF50; /* Texto verde de éxito */
+    border: none; /* Sin borde */
 }
