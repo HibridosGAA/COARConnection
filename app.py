@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, session
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash 
 
@@ -45,6 +45,10 @@ with app.app_context():
 
 @app.route('/')
 def home():
+    # Si el usuario ya está logueado, redirigir al dashboard
+    if 'username' in session:
+        return redirect(url_for('dashboard'))
+    
     # Muestra el formulario de login/registro al entrar a la URL raíz
     return render_template('login.html')
 
@@ -71,19 +75,42 @@ def register():
     flash('¡Cuenta creada con éxito! Por favor, inicia sesión.', 'success')
     return redirect(url_for('home')) # Redirige de vuelta a la página de login/registro
 
-# **********************************************
-# FIX 2: Nueva Ruta para INICIAR SESIÓN
-# Esta ruta evita el error 500 al hacer submit en el formulario de login.
-# **********************************************
+# Ruta para INICIAR SESIÓN
 @app.route('/login', methods=['POST'])
 def login():
-    # Por ahora, esta ruta solo evita el error y redirige.
-    # La lógica real de verificación de credenciales se implementaría aquí.
-    
-    # username = request.form.get('username')
-    # password = request.form.get('password')
-    
-    flash('Funcionalidad de inicio de sesión aún no implementada. Redirigiendo...', 'error')
+    username = request.form.get('username')
+    password = request.form.get('password')
+
+    user = User.query.filter_by(username=username).first()
+
+    # 1. Verificar si el usuario existe y si la contraseña es correcta
+    if user and user.check_password(password):
+        # 2. Iniciar sesión: Guardar el nombre de usuario en la sesión de Flask
+        session['username'] = user.username
+        flash(f'¡Bienvenido, {user.username}!', 'success')
+        return redirect(url_for('dashboard'))
+    else:
+        # 3. Mostrar error y redirigir de vuelta al login
+        flash('Nombre de usuario o contraseña incorrectos.', 'error')
+        return redirect(url_for('home'))
+
+# Nueva ruta para la ZONA PRIVADA
+@app.route('/dashboard')
+def dashboard():
+    # Requerir que el usuario haya iniciado sesión
+    if 'username' not in session:
+        flash('Debes iniciar sesión para acceder a esta página.', 'error')
+        return redirect(url_for('home'))
+        
+    # Pasar el nombre de usuario a la plantilla
+    return render_template('dashboard.html', username=session['username'])
+
+# Nueva ruta para CERRAR SESIÓN
+@app.route('/logout')
+def logout():
+    # Eliminar el nombre de usuario de la sesión
+    session.pop('username', None)
+    flash('Has cerrado sesión correctamente.', 'success')
     return redirect(url_for('home'))
 
 if __name__ == '__main__':
